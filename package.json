@@ -1,0 +1,20 @@
+{
+  "name": "desafio_teste_domino",
+  "version": "1.0.0",
+  "description": "Casos de teste em JavaScript (Jest) para uma partida de Dominó para 02 jogadores",
+  "main": "src/domino.js",
+  "scripts": {
+    "test": "jest --verbose"
+  },
+  "keywords": [
+    "domino",
+    "testes",
+    "jest",
+    "javascript"
+  ],
+  "author": "ViniciusRFerreira",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
