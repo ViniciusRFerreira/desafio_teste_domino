@@ -29,7 +29,7 @@ Repositório contendo a implementação em JavaScript e a suíte de **casos de t
 
 ## 🧪 Funcionamento dos Casos de Teste (`tests/domino.test.js`)
 
-A suíte possui **14 casos de teste** organizados em 5 seções:
+A suíte possui **15 casos de teste** organizados em 5 seções:
 
 | ID | Caso de Teste | O que valida / Como funciona |
 | :--- | :--- | :--- |
@@ -47,6 +47,7 @@ A suíte possui **14 casos de teste** organizados em 5 seções:
 | **CT12** | Encaixe na ponta esquerda | Joga `[6\|3]` e depois `[1\|3]` na esquerda e confere a rotação da pedra, as duas pontas e a ordem das pedras na mesa. |
 | **CT13** | Jogadas inválidas | Confere os erros ao jogar com a partida não iniciada, com índice de pedra inexistente e com extremidade desconhecida. |
 | **CT14** | Compra e passe fora de hora | Confere os erros ao comprar de monte vazio e ao comprar ou passar a vez fora do próprio turno. |
+| **CT15** | Compras sucessivas até achar peça ou esgotar o monte | Compra uma pedra incompatível (`[2\|3]`) seguida de uma compatível (`[6\|4]`) mantendo o mesmo turno e bloqueando nova compra; depois simula compras sucessivas até esgotar o monte sem peça compatível para liberar `passarVez()`. |
 
 ---
 

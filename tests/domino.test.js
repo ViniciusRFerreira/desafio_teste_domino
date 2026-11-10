@@ -251,5 +251,57 @@ describe('Dominó (Partida para 02 Jogadores) - Suíte de Casos de Teste', () =>
       expect(() => partida.passarVez(1)).toThrow('Não é a vez do Jogador 2');
       expect(() => partida.comprarDoMonte(0)).toThrow('O monte de compra (dorme) está vazio');
     });
+
+    test('CT15 - Deve permitir compras múltiplas até obter pedra compatível (mantendo o turno) ou até esgotar o monte para liberar o passe', () => {
+      const partida = new PartidaDomino();
+      partida.status = 'EM_ANDAMENTO';
+      partida.mesa = [new PedraDomino(6, 6)];
+      partida.pontaEsquerda = 6;
+      partida.pontaDireita = 6;
+      partida.jogadorDaVez = 0;
+
+      // Jogador 1 não possui pedra compatível com 6
+      partida.jogadores[0].mao = [new PedraDomino(1, 2)];
+      partida.jogadores[1].mao = [new PedraDomino(0, 1)];
+
+      // Topo do monte (pop) é [2|3] (incompatível) e logo abaixo está [6|4] (compatível)
+      partida.monte = [new PedraDomino(6, 4), new PedraDomino(2, 3)];
+
+      // 1ª compra: recebe [2|3] (incompatível), mantém o turno em 0 e continua podendo comprar
+      const primeiraCompra = partida.comprarDoMonte(0);
+      expect(primeiraCompra.toString()).toBe('[2|3]');
+      expect(partida.jogadorDaVez).toBe(0);
+      expect(partida.jogadores[0].mao).toHaveLength(2);
+
+      // 2ª compra: recebe [6|4] (compatível) e o turno permanece com o Jogador 1
+      const segundaCompra = partida.comprarDoMonte(0);
+      expect(segundaCompra.toString()).toBe('[6|4]');
+      expect(partida.jogadorDaVez).toBe(0);
+      expect(partida.jogadores[0].mao).toHaveLength(3);
+
+      // Como agora possui pedra jogável ([6|4]), nova compra é bloqueada
+      expect(() => partida.comprarDoMonte(0)).toThrow(
+        'O jogador já possui pedra compatível na mão e não precisa comprar do monte'
+      );
+
+      // Jogador 1 joga a pedra comprada [6|4] na direita -> pontas ficam 6 e 4, turno avança para 1
+      partida.jogarPedra(0, 2, 'direita');
+      expect(partida.jogadorDaVez).toBe(1);
+      expect(partida.pontaDireita).toBe(4);
+
+      // Agora o Jogador 2 (mão [0|1]) compra até o monte acabar sem encontrar pedra compatível com 6 ou 4
+      partida.monte = [new PedraDomino(0, 2), new PedraDomino(1, 3)];
+
+      expect(partida.comprarDoMonte(1).toString()).toBe('[1|3]');
+      expect(partida.jogadorDaVez).toBe(1);
+      expect(partida.comprarDoMonte(1).toString()).toBe('[0|2]');
+      expect(partida.jogadorDaVez).toBe(1);
+      expect(partida.monte).toHaveLength(0);
+
+      // Monte acabou sem pedra compatível: bloqueia nova compra e libera passar a vez
+      expect(() => partida.comprarDoMonte(1)).toThrow('O monte de compra (dorme) está vazio');
+      partida.passarVez(1);
+      expect(partida.jogadorDaVez).toBe(0);
+    });
   });
 });
